@@ -26,8 +26,6 @@ def xml_to_csv(path):
         svg = root.find('mark')[1].text
         bounding_boxes = create_bounding_box(svg)
         for b_box in bounding_boxes:
-            root_case = ET.Element('case')
-
             value = (root.find('number').text,
                      root.find('age').text,
                      root.find('sex').text,
@@ -52,6 +50,53 @@ def xml_to_csv(path):
     return xml_df
 
 
+def json_converter(path):
+    json_list = []  # string list
+    for xml_file in glob.glob(path + '/*.xml'):
+        tree = ET.parse(xml_file)
+        root = tree.getroot()
+        svg = root.find('mark')[1].text
+        bounding_boxes = create_bounding_box(svg)
+        for b_box in bounding_boxes:
+            case = {
+                'case_id': root.find('number').text,
+                'age': root.find('age').text,
+                'sex': root.find('sex').text,
+                'composition': root.find('composition').text,
+                'echogenicity': root.find('echogenicity').text,
+                'margins': root.find('margins').text,
+                'calcifications': root.find('calcifications').text,
+                'tirads': root.find('tirads').text,
+                'reportbacaf': root.find('reportbacaf').text,
+                'reporteco': root.find('reporteco').text,
+                'image': root.find('mark')[0].text,
+                'minx': b_box.minx,
+                'miny': b_box.miny,
+                'maxx': b_box.minx,
+                'maxy': b_box.maxy
+            }
+            json_string = json.dumps(case, indent=15)
+            json_list.append(json_string + ',')
+
+    create_json(json_list)
+
+
+def create_json(json_list):
+    final_json = ' { "cases": [ '
+    for i in json_list:
+        final_json += i
+
+    final_json = final_json[:-1]
+    final_json = final_json + "] }"
+    save_json(final_json)
+
+
+def save_json(final_json):
+    text_file = open("/Users/klaudiaszucs/thesis_work/tfrecord_converter/files/json_files/train.json", "w")
+    text_file.write(final_json)
+    text_file.close()
+
+
 def create_csv(name):
     file_path = 'files/' + name
     train_image_path = os.path.join(os.getcwd(), file_path)
@@ -63,9 +108,11 @@ def create_csv(name):
 
 
 def main():
-    create_csv("train")
-    create_csv("test")
-    create_csv("validation")
+    # create_csv("train")
+    # create_csv("test")
+    # create_csv("validation")
+    file_path = 'files/' + 'train'
+    json_converter(file_path)
 
 
 main()
