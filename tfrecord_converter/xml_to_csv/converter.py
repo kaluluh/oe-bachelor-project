@@ -8,14 +8,79 @@ from xml_to_csv import boundingbox
 
 
 def create_bounding_box(svg_object):
-    svg_array = json.loads(svg_object)
-    b_boxes = []
-    for svg in svg_array:
-        points_array = np.array(svg['points'])  # svg_points_list convert to 2d array with numpy
-        b_box = boundingbox.BoundingBox(points_array)
-        b_boxes.append(b_box)
+    if svg_object is not None:
+        svg_array = json.loads(svg_object)
+        b_boxes = []
+        for svg in svg_array:
+            points_array = np.array(svg['points'])  # svg_points_list convert to 2d array with numpy
+            b_box = boundingbox.BoundingBox(points_array)
+            b_boxes.append(b_box)
 
-    return b_boxes
+        final_bbox = []
+        unique_bbox = make_unique_bbox(b_boxes)
+        for bbox in unique_bbox:
+            temp_bbox = {
+                'minx': bbox.minx,
+                'miny': bbox.miny,
+                'maxx': bbox.maxx,
+                'maxy': bbox.maxy,
+            }
+            final_bbox.append(temp_bbox)
+
+        return final_bbox
+
+
+def make_unique_bbox(bounding_boxes):
+    unique_bboxes = []
+    for bbox in bounding_boxes:
+        if bbox not in unique_bboxes:
+            unique_bboxes.append(bbox)
+    return unique_bboxes
+
+
+def xml_to_json(path):
+    temp_cases = []  # dictionary case object list
+    for xml_file in glob.glob(path + '/*.xml'):
+        temp = xml_file.split('/')
+        file_name = temp[len(temp) - 1][:-4]
+        tree = ET.parse(xml_file)
+        root = tree.getroot()
+        images = root.findall('mark')
+
+        for image in images:
+            number = image.find('image').text
+            image_id = file_name + '_' + number
+
+            temp_bboxes = image.find('svg').text
+            bounding_boxes = create_bounding_box(temp_bboxes)
+
+            case = {
+                'image_id': image_id,
+                'age': root.find('age').text,
+                'sex': root.find('sex').text,
+                'composition': root.find('composition').text,
+                'echogenicity': root.find('echogenicity').text,
+                'margins': root.find('margins').text,
+                'calcifications': root.find('calcifications').text,
+                'tirads': root.find('tirads').text,
+                'reportbacaf': root.find('reportbacaf').text,
+                'reporteco': root.find('reporteco').text,
+                'image': root.find('mark')[0].text,
+                'bbox': bounding_boxes,
+            }
+            temp_cases.append(case)
+
+    cases = {
+        'cases': temp_cases
+    }
+    save_json(json.dumps(cases))
+
+
+def save_json(final_json):
+    text_file = open("/Users/klaudiaszucs/thesis_work/tfrecord_converter/files/json_files/validation.json", "w")
+    text_file.write(final_json)
+    text_file.close()
+
 
 def xml_to_csv(path):
     xml_list = []
@@ -49,50 +114,6 @@ def xml_to_csv(path):
     return xml_df
 
 
-def xml_to_json(path):
-    json_list = []  # string list
-    for xml_file in glob.glob(path + '/*.xml'):
-        tree = ET.parse(xml_file)
-        root = tree.getroot()
-        # svg = root.find('mark')[1].text
-        images = root.findall('mark')
-        bounding_boxes = create_bounding_box(images)
-        case = {
-            'case_id': root.find('number').text,
-            'age': root.find('age').text,
-            'sex': root.find('sex').text,
-            'composition': root.find('composition').text,
-            'echogenicity': root.find('echogenicity').text,
-            'margins': root.find('margins').text,
-            'calcifications': root.find('calcifications').text,
-            'tirads': root.find('tirads').text,
-            'reportbacaf': root.find('reportbacaf').text,
-            'reporteco': root.find('reporteco').text,
-            'image': root.find('mark')[0].text,
-            'bbox': json.dumps(bounding_boxes),
-        }
-        json_string = json.dumps(case, indent=12)
-        json_list.append(json_string + ',')
-
-    create_json(json_list)
-
-
-def create_json(json_list):
-    final_json = ' { "cases": [ '
-    for i in json_list:
-        final_json += i
-
-    final_json = final_json[:-1]
-    final_json = final_json + "] }"
-    save_json(final_json)
-
-
-def save_json(final_json):
-    text_file = open("/Users/klaudiaszucs/thesis_work/tfrecord_converter/files/json_files/test.json", "w")
-    text_file.write(final_json)
-    text_file.close()
-
-
 def create_csv(name):
     file_path = 'files/' + name
     train_image_path = os.path.join(os.getcwd(), file_path)
@@ -107,7 +128,7 @@ def main():
     # create_csv("train")
     # create_csv("test")
     # create_csv("validation")
-    file_path = 'files/' + 'test'
+    file_path = 'files/' + 'validation'
     xml_to_json(file_path)
 
 
