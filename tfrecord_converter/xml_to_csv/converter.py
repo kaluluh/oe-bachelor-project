@@ -17,7 +17,6 @@ def create_bounding_box(svg_object):
 
     return b_boxes
 
-
 def xml_to_csv(path):
     xml_list = []
     for xml_file in glob.glob(path + '/*.xml'):
@@ -50,33 +49,30 @@ def xml_to_csv(path):
     return xml_df
 
 
-def json_converter(path):
+def xml_to_json(path):
     json_list = []  # string list
     for xml_file in glob.glob(path + '/*.xml'):
         tree = ET.parse(xml_file)
         root = tree.getroot()
-        svg = root.find('mark')[1].text
-        bounding_boxes = create_bounding_box(svg)
-        for b_box in bounding_boxes:
-            case = {
-                'case_id': root.find('number').text,
-                'age': root.find('age').text,
-                'sex': root.find('sex').text,
-                'composition': root.find('composition').text,
-                'echogenicity': root.find('echogenicity').text,
-                'margins': root.find('margins').text,
-                'calcifications': root.find('calcifications').text,
-                'tirads': root.find('tirads').text,
-                'reportbacaf': root.find('reportbacaf').text,
-                'reporteco': root.find('reporteco').text,
-                'image': root.find('mark')[0].text,
-                'minx': b_box.minx,
-                'miny': b_box.miny,
-                'maxx': b_box.minx,
-                'maxy': b_box.maxy
-            }
-            json_string = json.dumps(case, indent=15)
-            json_list.append(json_string + ',')
+        # svg = root.find('mark')[1].text
+        images = root.findall('mark')
+        bounding_boxes = create_bounding_box(images)
+        case = {
+            'case_id': root.find('number').text,
+            'age': root.find('age').text,
+            'sex': root.find('sex').text,
+            'composition': root.find('composition').text,
+            'echogenicity': root.find('echogenicity').text,
+            'margins': root.find('margins').text,
+            'calcifications': root.find('calcifications').text,
+            'tirads': root.find('tirads').text,
+            'reportbacaf': root.find('reportbacaf').text,
+            'reporteco': root.find('reporteco').text,
+            'image': root.find('mark')[0].text,
+            'bbox': json.dumps(bounding_boxes),
+        }
+        json_string = json.dumps(case, indent=12)
+        json_list.append(json_string + ',')
 
     create_json(json_list)
 
@@ -92,7 +88,7 @@ def create_json(json_list):
 
 
 def save_json(final_json):
-    text_file = open("/Users/klaudiaszucs/thesis_work/tfrecord_converter/files/json_files/train.json", "w")
+    text_file = open("/Users/klaudiaszucs/thesis_work/tfrecord_converter/files/json_files/test.json", "w")
     text_file.write(final_json)
     text_file.close()
 
@@ -111,8 +107,8 @@ def main():
     # create_csv("train")
     # create_csv("test")
     # create_csv("validation")
-    file_path = 'files/' + 'train'
-    json_converter(file_path)
+    file_path = 'files/' + 'test'
+    xml_to_json(file_path)
 
 
 main()
