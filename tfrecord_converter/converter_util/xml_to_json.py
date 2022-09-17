@@ -1,15 +1,21 @@
 import glob
 import json
+import os
 import xml.etree.cElementTree as ET
 from converter_util.bbox_util import create_bounding_box
+
+FILE_PATH = "/Users/klaudiaszucs/thesis_work/tfrecord_converter/files/test"
+JSON_FILE = "/Users/klaudiaszucs/thesis_work/tfrecord_converter/files/json_files/test.json"
 
 
 # [ymin, xmin, ymax, xmax]
 def xml_to_json(path):
     temp_cases = []  # dictionary case object list
-    for xml_file in glob.glob(path + '/*.xml'):
+    xml_files = glob.glob(path + '/*.xml', recursive=True)
+    for xml_file in xml_files:
         temp = xml_file.split('/')
         file_name = temp[len(temp) - 1][:-4]
+        print(file_name)
         tree = ET.parse(xml_file)
         root = tree.getroot()
         images = root.findall('mark')
@@ -32,7 +38,7 @@ def xml_to_json(path):
                     ymax.append(bbox['maxy'])
 
             case = {
-                'image_id': image_id,
+                'case_id': image_id,
                 'age': root.find('age').text,
                 'sex': root.find('sex').text,
                 'composition': root.find('composition').text,
@@ -42,7 +48,7 @@ def xml_to_json(path):
                 'tirads': root.find('tirads').text,
                 'reportbacaf': root.find('reportbacaf').text,
                 'reporteco': root.find('reporteco').text,
-                'image': root.find('mark')[0].text,
+                # 'image': root.find('mark')[0].text,
                 # 'bbox': bounding_boxes,
                 'xmin': xmin,
                 'xmax': xmax,
@@ -58,14 +64,12 @@ def xml_to_json(path):
 
 
 def save_json(final_json):
-    text_file = open("/Users/klaudiaszucs/thesis_work/tfrecord_converter/files/json_files/test.json", "w")
+    text_file = open(JSON_FILE, "w")
     text_file.write(final_json)
     text_file.close()
 
 
 def main():
-    file_path = 'files/' + 'test'
-    xml_to_json(file_path)
-
+    xml_to_json(FILE_PATH)
 
 main()
