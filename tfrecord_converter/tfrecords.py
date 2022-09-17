@@ -6,19 +6,19 @@ import tensorflow as tf
 import dataset_util
 
 # INITIALIZE JSON PATH VARIABLES
-TRAIN_PATH = os.path.join(os.getcwd(), 'files/json_files/validation.json')
+JSON_FILE_PATH = os.path.join(os.getcwd(), 'files/json_files/validation.json')
 
 # INITIALIZE IMAHE PATH VARIABLES
-TRAIN_IMAGES_PATH = os.path.join(os.getcwd(), 'files/validation')
+IMAGES_PATH = os.path.join(os.getcwd(), 'files/validation')
 
 # INITIALIZE TFRECORD DIRECTORY
 tfrecords_dir = os.path.join(os.getcwd(), 'files/tfrecords/validation')
 
 # LOAD JSON FILES TO DATAFRAME
-df = pd.read_json(TRAIN_PATH)  # = annotations
+df = pd.read_json(JSON_FILE_PATH)  # = annotations
 
 # INITIALIZE THE NUMBER OF TFRECORDS DEPEND ON THE NUMBER OF SAMPLE IMAGES
-num_samples = len(glob.glob(TRAIN_IMAGES_PATH + '/*.xml'))
+num_samples = len(glob.glob(IMAGES_PATH + '/*.xml'))
 num_tfrecords = len(df) // num_samples
 
 if len(df) % num_samples:
@@ -87,7 +87,7 @@ def create_tfrecord(df):
                 tfrecords_dir + "/file_%.2i-%i.tfrec" % (tfrec_num, len(samples))
         ) as writer:
             for sample in samples['cases']:
-                image_path = TRAIN_IMAGES_PATH + "/" + sample["case_id"] + ".jpg"
+                image_path = IMAGES_PATH + "/" + sample["case_id"] + ".jpg"
                 image = tf.io.decode_jpeg(tf.io.read_file(image_path))
                 example = create_example(image,sample)
                 writer.write(example.SerializeToString())
