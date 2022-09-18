@@ -1,24 +1,27 @@
 import os
-import pandas as pd
 import glob
+import pprint
+import pandas as pd
 import tensorflow as tf
+import matplotlib.pyplot as plt
 
 import dataset_util
 
 # INITIALIZE JSON PATH VARIABLES
-JSON_FILE_PATH = os.path.join(os.getcwd(), 'files/json_files/validation.json')
+JSON_FILE_PATH = os.path.join(os.getcwd(), 'files/json_files/main_test.json')
 
 # INITIALIZE IMAHE PATH VARIABLES
-IMAGES_PATH = os.path.join(os.getcwd(), 'files/validation')
+IMAGES_PATH = os.path.join(os.getcwd(), 'files/main_test')
 
 # INITIALIZE TFRECORD DIRECTORY
-tfrecords_dir = os.path.join(os.getcwd(), 'files/tfrecords/validation')
+tfrecords_dir = os.path.join(os.getcwd(), 'files/tfrecords/main_test')
 
 # LOAD JSON FILES TO DATAFRAME
 df = pd.read_json(JSON_FILE_PATH)  # = annotations
 
 # INITIALIZE THE NUMBER OF TFRECORDS DEPEND ON THE NUMBER OF SAMPLE IMAGES
-num_samples = len(glob.glob(IMAGES_PATH + '/*.xml'))
+num_samples = 1
+    # len(glob.glob(IMAGES_PATH + '/*.xml'))
 num_tfrecords = len(df) // num_samples
 
 if len(df) % num_samples:
@@ -29,7 +32,7 @@ if not os.path.exists(tfrecords_dir):
 
 
 # CREATE TRAIN FEATURE EXAMPLE
-def create_example(image,example):
+def create_example(image, example):
     feature = {
         "image": dataset_util.image_feature(image),
         "case_id": dataset_util.bytes_feature(example['case_id']),
@@ -42,19 +45,20 @@ def create_example(image,example):
         "tirads": dataset_util.bytes_feature(example["tirads"]),
         "reportbacaf": dataset_util.bytes_feature(example["reportbacaf"]),
         "reporteco": dataset_util.bytes_feature(example["reporteco"]),
-        "xmin": dataset_util.float_feature_list(example["xmin"]),
-        "xmax": dataset_util.float_feature_list(example["xmax"]),
-        "ymin": dataset_util.float_feature_list(example["ymin"]),
-        "ymax": dataset_util.float_feature_list(example["ymax"]),
+        "bbox": dataset_util.float_feature_list(example["bbox"]),
+        # "xmin": dataset_util.float_feature_list(example["xmin"]),
+        # "xmax": dataset_util.float_feature_list(example["xmax"]),
+        # "ymin": dataset_util.float_feature_list(example["ymin"]),
+        # "ymax": dataset_util.float_feature_list(example["ymax"]),
     }
 
     return tf.train.Example(features=tf.train.Features(feature=feature))
 
 
 # HOW TO USE THE CREATED FEATURE EXAMPLE
-def parse_tfrecord_fn(example):
+def parse_tfrecord_fnn(example):
     feature_description = {
-        "image": tf.io.FixedLenFeature([],tf.string),
+        "image": tf.io.FixedLenFeature([], tf.string),
         "case_id": tf.io.FixedLenFeature([], tf.string),
         "age": tf.io.FixedLenFeature([], tf.string),
         "sex": tf.io.FixedLenFeature([], tf.string),
@@ -65,10 +69,11 @@ def parse_tfrecord_fn(example):
         "tirads": tf.io.FixedLenFeature([], tf.string),
         "reportbacaf": tf.io.FixedLenFeature([], tf.string),
         "reporteco": tf.io.FixedLenFeature([], tf.string),
-        "xmin": tf.io.FixedLenFeature([], tf.float32),
-        "xmax": tf.io.FixedLenFeature([], tf.float32),
-        "ymin": tf.io.FixedLenFeature([], tf.float32),
-        "ymax": tf.io.FixedLenFeature([], tf.float32),
+        "bbox": tf.io.FixedLenFeature([], tf.float32),
+        # "xmin": tf.io.FixedLenFeature([], tf.float32),
+        # "xmax": tf.io.FixedLenFeature([], tf.float32),
+        # "ymin": tf.io.FixedLenFeature([], tf.float32),
+        # "ymax": tf.io.FixedLenFeature([], tf.float32),
     }
 
     example = tf.io.parse_single_example(example, feature_description)
@@ -89,13 +94,30 @@ def create_tfrecord(df):
             for sample in samples['cases']:
                 image_path = IMAGES_PATH + "/" + sample["case_id"] + ".jpg"
                 image = tf.io.decode_jpeg(tf.io.read_file(image_path))
-                example = create_example(image,sample)
+                example = create_example(image, sample)
                 writer.write(example.SerializeToString())
 
     print('success - tfrecord has been created')
 
+def generate_sample_from_tfrecord():
+    raw_dataset = tf.data.TFRecordDataset(f"{tfrecords_dir}/file_00-{num_samples}.tfrec")
+    parsed_dataset = raw_dataset.map(parse_tfrecord_fnn)
+
+    for features in parsed_dataset.take(1):
+        for key in features.keys():
+            if key != "image":
+                print(f"{key}: {features[key]}")
+
+        print(f"Image shape: {features['image'].shape}")
+        plt.figure(figsize=(9, 9))
+        plt.imshow(features["image"].numpy())
+        plt.show()
+
+
 def main():
-    create_tfrecord(df)
+    # create_tfrecord(df)
+    print('hello')
+    generate_sample_from_tfrecord()
 
 
 main()
