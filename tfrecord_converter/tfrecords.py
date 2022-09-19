@@ -8,20 +8,19 @@ import matplotlib.pyplot as plt
 import dataset_util
 
 # INITIALIZE JSON PATH VARIABLES
-JSON_FILE_PATH = os.path.join(os.getcwd(), 'files/json_files/main_test.json')
+JSON_FILE_PATH = os.path.join(os.getcwd(), 'files/json_files/train.json')
 
 # INITIALIZE IMAHE PATH VARIABLES
-IMAGES_PATH = os.path.join(os.getcwd(), 'files/main_test')
+IMAGES_PATH = os.path.join(os.getcwd(), 'files/train')
 
 # INITIALIZE TFRECORD DIRECTORY
-tfrecords_dir = os.path.join(os.getcwd(), 'files/tfrecords/main_test')
+tfrecords_dir = os.path.join(os.getcwd(), 'files/tfrecords/train')
 
 # LOAD JSON FILES TO DATAFRAME
 df = pd.read_json(JSON_FILE_PATH)  # = annotations
 
 # INITIALIZE THE NUMBER OF TFRECORDS DEPEND ON THE NUMBER OF SAMPLE IMAGES
-num_samples = 1
-    # len(glob.glob(IMAGES_PATH + '/*.xml'))
+num_samples = len(glob.glob(IMAGES_PATH + '/*.xml'))
 num_tfrecords = len(df) // num_samples
 
 if len(df) % num_samples:
@@ -45,11 +44,11 @@ def create_example(image, example):
         "tirads": dataset_util.bytes_feature(example["tirads"]),
         "reportbacaf": dataset_util.bytes_feature(example["reportbacaf"]),
         "reporteco": dataset_util.bytes_feature(example["reporteco"]),
-        "bbox": dataset_util.float_feature_list(example["bbox"]),
-        # "xmin": dataset_util.float_feature_list(example["xmin"]),
-        # "xmax": dataset_util.float_feature_list(example["xmax"]),
-        # "ymin": dataset_util.float_feature_list(example["ymin"]),
-        # "ymax": dataset_util.float_feature_list(example["ymax"]),
+        # "bbox": dataset_util.float_feature_list(example["bbox"]),
+        "xmin": dataset_util.float_feature_list(example["xmin"]),
+        "xmax": dataset_util.float_feature_list(example["xmax"]),
+        "ymin": dataset_util.float_feature_list(example["ymin"]),
+        "ymax": dataset_util.float_feature_list(example["ymax"]),
     }
 
     return tf.train.Example(features=tf.train.Features(feature=feature))
@@ -69,11 +68,11 @@ def parse_tfrecord_fnn(example):
         "tirads": tf.io.FixedLenFeature([], tf.string),
         "reportbacaf": tf.io.FixedLenFeature([], tf.string),
         "reporteco": tf.io.FixedLenFeature([], tf.string),
-        "bbox": tf.io.FixedLenFeature([], tf.float32),
-        # "xmin": tf.io.FixedLenFeature([], tf.float32),
-        # "xmax": tf.io.FixedLenFeature([], tf.float32),
-        # "ymin": tf.io.FixedLenFeature([], tf.float32),
-        # "ymax": tf.io.FixedLenFeature([], tf.float32),
+        # "bbox": tf.io.FixedLenFeature([], tf.float32),
+        "xmin": tf.io.FixedLenFeature([], tf.float32),
+        "xmax": tf.io.FixedLenFeature([], tf.float32),
+        "ymin": tf.io.FixedLenFeature([], tf.float32),
+        "ymax": tf.io.FixedLenFeature([], tf.float32),
     }
 
     example = tf.io.parse_single_example(example, feature_description)
