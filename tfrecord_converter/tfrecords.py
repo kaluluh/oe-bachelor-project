@@ -8,19 +8,20 @@ import matplotlib.pyplot as plt
 import dataset_util
 
 # INITIALIZE JSON PATH VARIABLES
-JSON_FILE_PATH = os.path.join(os.getcwd(), 'files/json_files/train.json')
+JSON_FILE_PATH = os.path.join(os.getcwd(), 'files/json_files/main_test.json')
 
 # INITIALIZE IMAHE PATH VARIABLES
-IMAGES_PATH = os.path.join(os.getcwd(), 'files/train')
+IMAGES_PATH = os.path.join(os.getcwd(), 'files/main_test')
 
 # INITIALIZE TFRECORD DIRECTORY
-tfrecords_dir = os.path.join(os.getcwd(), 'files/tfrecords/train')
+tfrecords_dir = os.path.join(os.getcwd(), 'files/tfrecords/main_test')
 
 # LOAD JSON FILES TO DATAFRAME
 df = pd.read_json(JSON_FILE_PATH)  # = annotations
 
 # INITIALIZE THE NUMBER OF TFRECORDS DEPEND ON THE NUMBER OF SAMPLE IMAGES
-num_samples = len(glob.glob(IMAGES_PATH + '/*.xml'))
+num_samples = 1
+    # len(glob.glob(IMAGES_PATH + '/*.xml'))
 num_tfrecords = len(df) // num_samples
 
 if len(df) % num_samples:
@@ -55,7 +56,7 @@ def create_example(image, example):
 
 
 # HOW TO USE THE CREATED FEATURE EXAMPLE
-def parse_tfrecord_fnn(example):
+def parse_tfrecord_fn(example):
     feature_description = {
         "image": tf.io.FixedLenFeature([], tf.string),
         "case_id": tf.io.FixedLenFeature([], tf.string),
@@ -77,7 +78,7 @@ def parse_tfrecord_fnn(example):
 
     example = tf.io.parse_single_example(example, feature_description)
     example["image"] = tf.io.decode_jpeg(example["image"], channels=3)
-    example["bbox"] = tf.sparse.to_dense(example["bbox"])
+    # example["bbox"] = tf.sparse.to_dense(example["bbox"])
 
     return example
 
@@ -98,9 +99,10 @@ def create_tfrecord(df):
 
     print('success - tfrecord has been created')
 
+
 def generate_sample_from_tfrecord():
     raw_dataset = tf.data.TFRecordDataset(f"{tfrecords_dir}/file_00-{num_samples}.tfrec")
-    parsed_dataset = raw_dataset.map(parse_tfrecord_fnn)
+    parsed_dataset = raw_dataset.map(parse_tfrecord_fn)
 
     for features in parsed_dataset.take(1):
         for key in features.keys():
@@ -115,7 +117,6 @@ def generate_sample_from_tfrecord():
 
 def main():
     # create_tfrecord(df)
-    print('hello')
     generate_sample_from_tfrecord()
 
 

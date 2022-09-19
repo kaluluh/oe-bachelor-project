@@ -11,11 +11,17 @@
       "tirads": "4c",
       "reportbacaf": "",
       "reporteco": "",
-      "bbox": [
-           367,
-           451,
-            78,
-            173
+      "xmin": [
+        367
+      ],
+      "xmax": [
+        451
+      ],
+      "ymin": [
+        78
+      ],
+      "ymax": [
+        173
       ]
     }
   ]
