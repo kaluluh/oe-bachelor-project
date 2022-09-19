@@ -4,7 +4,7 @@ import os
 import xml.etree.cElementTree as ET
 from converter_util.bbox_util import create_bounding_box
 
-FILE_PATH = "/Users/klaudiaszucs/thesis_work/tfrecord_converter/files/train"
+FILE_PATH = "/files/dataset/train"
 JSON_FILE = "/Users/klaudiaszucs/thesis_work/tfrecord_converter/files/json_files/train.json"
 
 

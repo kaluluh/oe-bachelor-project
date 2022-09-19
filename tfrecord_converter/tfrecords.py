@@ -10,8 +10,8 @@ import dataset_util
 # INITIALIZE JSON PATH VARIABLES
 JSON_FILE_PATH = os.path.join(os.getcwd(), 'files/json_files/main_test.json')
 
-# INITIALIZE IMAHE PATH VARIABLES
-IMAGES_PATH = os.path.join(os.getcwd(), 'files/main_test')
+# INITIALIZE IMAGE PATH VARIABLES
+IMAGES_PATH = os.path.join(os.getcwd(), 'files/dataset/main_test')
 
 # INITIALIZE TFRECORD DIRECTORY
 tfrecords_dir = os.path.join(os.getcwd(), 'files/tfrecords/main_test')
