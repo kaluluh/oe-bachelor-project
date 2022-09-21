@@ -1,38 +1,32 @@
 import os
 import glob
-import pprint
+import dataset_util
 import pandas as pd
+import tf_slim as slim
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
-import dataset_util
-
 # INITIALIZE JSON PATH VARIABLES
 JSON_FILE_PATH = os.path.join(os.getcwd(), 'files/json_files/main_test.json')
-
 # INITIALIZE IMAGE PATH VARIABLES
 IMAGES_PATH = os.path.join(os.getcwd(), 'files/dataset/main_test')
-
 # INITIALIZE TFRECORD DIRECTORY
 tfrecords_dir = os.path.join(os.getcwd(), 'files/tfrecords/main_test')
-
 # LOAD JSON FILES TO DATAFRAME
 df = pd.read_json(JSON_FILE_PATH)  # = annotations
-
 # INITIALIZE THE NUMBER OF TFRECORDS DEPEND ON THE NUMBER OF SAMPLE IMAGES
 num_samples = 1
-    # len(glob.glob(IMAGES_PATH + '/*.xml'))
+# len(glob.glob(IMAGES_PATH + '/*.xml'))
 num_tfrecords = len(df) // num_samples
 
 if len(df) % num_samples:
     num_tfrecords += 1  # add one record if there are any remaining samples
 
 if not os.path.exists(tfrecords_dir):
-    os.makedirs(tfrecords_dir)  # creating TFRecords output folder
+    os.makedirs(tfrecords_dir)
 
 
-# CREATE TRAIN FEATURE EXAMPLE
-def create_example(image, example):
+def create_feature_example(image, example):
     feature = {
         "image": dataset_util.image_feature(image),
         "case_id": dataset_util.bytes_feature(example['case_id']),
@@ -45,17 +39,16 @@ def create_example(image, example):
         "tirads": dataset_util.bytes_feature(example["tirads"]),
         "reportbacaf": dataset_util.bytes_feature(example["reportbacaf"]),
         "reporteco": dataset_util.bytes_feature(example["reporteco"]),
-        # "bbox": dataset_util.float_feature_list(example["bbox"]),
-        "xmin": dataset_util.float_feature_list(example["xmin"]),
-        "xmax": dataset_util.float_feature_list(example["xmax"]),
-        "ymin": dataset_util.float_feature_list(example["ymin"]),
-        "ymax": dataset_util.float_feature_list(example["ymax"]),
+        "bbox/xmin": dataset_util.float_feature_list(example["xmin"]),
+        "bbox/xmax": dataset_util.float_feature_list(example["xmax"]),
+        "bbox/ymin": dataset_util.float_feature_list(example["ymin"]),
+        "bbox/ymax": dataset_util.float_feature_list(example["ymax"]),
+        "bbox_number": dataset_util.float_feature_list(len(example["xmin"]))
     }
 
     return tf.train.Example(features=tf.train.Features(feature=feature))
 
 
-# HOW TO USE THE CREATED FEATURE EXAMPLE
 def parse_tfrecord_fn(example):
     feature_description = {
         "image": tf.io.FixedLenFeature([], tf.string),
@@ -69,18 +62,17 @@ def parse_tfrecord_fn(example):
         "tirads": tf.io.FixedLenFeature([], tf.string),
         "reportbacaf": tf.io.FixedLenFeature([], tf.string),
         "reporteco": tf.io.FixedLenFeature([], tf.string),
-        # "bbox": tf.io.FixedLenFeature([], tf.float32),
-        "xmin": tf.io.FixedLenFeature([], tf.float32),
-        "xmax": tf.io.FixedLenFeature([], tf.float32),
-        "ymin": tf.io.FixedLenFeature([], tf.float32),
-        "ymax": tf.io.FixedLenFeature([], tf.float32),
+        "bbox/xmin": tf.io.VarLenFeature(tf.float32),
+        "bbox/xmax": tf.io.VarLenFeature(tf.float32),
+        "bbox/ymin": tf.io.VarLenFeature(tf.float32),
+        "bbox/ymax": tf.io.VarLenFeature(tf.float32),
+        "bbox_number": tf.io.FixedLenFeature([], tf.int64),
     }
 
-    example = tf.io.parse_single_example(example, feature_description)
-    example["image"] = tf.io.decode_jpeg(example["image"], channels=3)
-    # example["bbox"] = tf.sparse.to_dense(example["bbox"])
+    parsed_features = tf.io.parse_single_example(example, feature_description)
+    parsed_features["image"] = tf.io.decode_jpeg(parsed_features["image"], channels=3)
 
-    return example
+    return parsed_features
 
 
 def create_tfrecord(df):
@@ -94,7 +86,7 @@ def create_tfrecord(df):
             for sample in samples['cases']:
                 image_path = IMAGES_PATH + "/" + sample["case_id"] + ".jpg"
                 image = tf.io.decode_jpeg(tf.io.read_file(image_path))
-                example = create_example(image, sample)
+                example = create_feature_example(image, sample)
                 writer.write(example.SerializeToString())
 
     print('success - tfrecord has been created')
