@@ -17,7 +17,7 @@ class BoundingBox(object):
             # Set max coords
             if point['x'] > self.maxx:
                 self.maxx = point['x']
-            elif point['y'] > self.maxy:
+            if point['y'] > self.maxy:
                 self.maxy = point['y']
 
     @property
