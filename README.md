@@ -1,1 +1,1 @@
-# thesis_work
+# oe bachelor project work
