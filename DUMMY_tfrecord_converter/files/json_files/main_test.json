@@ -1,0 +1,32 @@
+{
+  "cases": [
+    {
+      "case_id": "162_1",
+      "age": "40",
+      "sex": "F",
+      "composition": "solid",
+      "echogenicity": "hypoechogenicity",
+      "margins": "ill defined",
+      "calcifications": "non",
+      "tirads": "4c",
+      "reportbacaf": "",
+      "reporteco": "",
+      "xmin": [
+                207,
+                87
+            ],
+      "xmax": [
+                377,
+                98
+            ],
+      "ymin": [
+                84,
+                18
+            ],
+      "ymax": [
+                231,
+                98
+            ]
+    }
+  ]
+}

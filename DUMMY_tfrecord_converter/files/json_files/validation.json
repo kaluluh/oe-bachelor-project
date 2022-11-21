@@ -1,0 +1,272 @@
+{
+    "cases": [
+        {
+            "case_id": "400_1",
+            "age": "63",
+            "sex": "F",
+            "composition": "",
+            "echogenicity": "",
+            "margins": "well defined smooth",
+            "calcifications": "microcalcification",
+            "tirads": "4a",
+            "reportbacaf": "",
+            "reporteco": "",
+            "xmin": [
+                207
+            ],
+            "xmax": [
+                377
+            ],
+            "ymin": [
+                84
+            ],
+            "ymax": [
+                231
+            ]
+        },
+        {
+            "case_id": "399_1",
+            "age": "62",
+            "sex": "M",
+            "composition": "",
+            "echogenicity": "",
+            "margins": "well defined smooth",
+            "calcifications": "macrocalcification",
+            "tirads": "4b",
+            "reportbacaf": "",
+            "reporteco": "ARROW: MACROCALCIFICATIONS",
+            "xmin": [
+                254,
+                275
+            ],
+            "xmax": [
+                304,
+                335
+            ],
+            "ymin": [
+                110,
+                156
+            ],
+            "ymax": [
+                169,
+                156
+            ]
+        },
+        {
+            "case_id": "398_1",
+            "age": "70",
+            "sex": "F",
+            "composition": "",
+            "echogenicity": "",
+            "margins": "spiculated",
+            "calcifications": "non",
+            "tirads": "4b",
+            "reportbacaf": "",
+            "reporteco": "",
+            "xmin": [
+                264
+            ],
+            "xmax": [
+                356
+            ],
+            "ymin": [
+                85
+            ],
+            "ymax": [
+                204
+            ]
+        },
+        {
+            "case_id": "396_1",
+            "age": "",
+            "sex": "",
+            "composition": "",
+            "echogenicity": "",
+            "margins": "",
+            "calcifications": "",
+            "tirads": "",
+            "reportbacaf": "",
+            "reporteco": "",
+            "xmin": [
+                142
+            ],
+            "xmax": [
+                367
+            ],
+            "ymin": [
+                34
+            ],
+            "ymax": [
+                248
+            ]
+        },
+        {
+            "case_id": "397_1",
+            "age": "39",
+            "sex": "F",
+            "composition": "",
+            "echogenicity": "",
+            "margins": "well defined smooth",
+            "calcifications": "non",
+            "tirads": "2",
+            "reportbacaf": "",
+            "reporteco": "THYROIDITIS",
+            "xmin": [
+                297
+            ],
+            "xmax": [
+                396
+            ],
+            "ymin": [
+                127
+            ],
+            "ymax": [
+                208
+            ]
+        },
+        {
+            "case_id": "395_2",
+            "age": "24",
+            "sex": "F",
+            "composition": "",
+            "echogenicity": "",
+            "margins": "well defined smooth",
+            "calcifications": "microcalcification",
+            "tirads": "4a",
+            "reportbacaf": "",
+            "reporteco": "",
+            "xmin": [
+                260
+            ],
+            "xmax": [
+                348
+            ],
+            "ymin": [
+                62
+            ],
+            "ymax": [
+                191
+            ]
+        },
+        {
+            "case_id": "395_1",
+            "age": "24",
+            "sex": "F",
+            "composition": "",
+            "echogenicity": "",
+            "margins": "well defined smooth",
+            "calcifications": "microcalcification",
+            "tirads": "4a",
+            "reportbacaf": "",
+            "reporteco": "",
+            "xmin": [
+                202
+            ],
+            "xmax": [
+                365
+            ],
+            "ymin": [
+                52
+            ],
+            "ymax": [
+                117
+            ]
+        },
+        {
+            "case_id": "394_1",
+            "age": "50",
+            "sex": "F",
+            "composition": "",
+            "echogenicity": "",
+            "margins": "ill- defined",
+            "calcifications": "microcalcification",
+            "tirads": "5",
+            "reportbacaf": "",
+            "reporteco": "",
+            "xmin": [
+                146
+            ],
+            "xmax": [
+                410
+            ],
+            "ymin": [
+                34
+            ],
+            "ymax": [
+                177
+            ]
+        },
+        {
+            "case_id": "391_1",
+            "age": "33",
+            "sex": "F",
+            "composition": "",
+            "echogenicity": "",
+            "margins": "well defined smooth",
+            "calcifications": "non",
+            "tirads": "2",
+            "reportbacaf": "",
+            "reporteco": "",
+            "xmin": [
+                220
+            ],
+            "xmax": [
+                375
+            ],
+            "ymin": [
+                114
+            ],
+            "ymax": [
+                189
+            ]
+        },
+        {
+            "case_id": "391_2",
+            "age": "33",
+            "sex": "F",
+            "composition": "",
+            "echogenicity": "",
+            "margins": "well defined smooth",
+            "calcifications": "non",
+            "tirads": "2",
+            "reportbacaf": "",
+            "reporteco": "",
+            "xmin": [
+                235
+            ],
+            "xmax": [
+                379
+            ],
+            "ymin": [
+                86
+            ],
+            "ymax": [
+                189
+            ]
+        },
+        {
+            "case_id": "392_1",
+            "age": "40 ",
+            "sex": "F",
+            "composition": "",
+            "echogenicity": "",
+            "margins": "ill- defined",
+            "calcifications": "microcalcification",
+            "tirads": "4c",
+            "reportbacaf": "",
+            "reporteco": "",
+            "xmin": [
+                249
+            ],
+            "xmax": [
+                305
+            ],
+            "ymin": [
+                75
+            ],
+            "ymax": [
+                169
+            ]
+        }
+    ]
+}
