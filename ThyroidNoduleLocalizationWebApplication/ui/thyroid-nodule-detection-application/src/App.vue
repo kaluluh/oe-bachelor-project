@@ -1,15 +1,15 @@
 <template>
 <!--<img src="./assets/logo.png">-->
-  <main-page class="roboto-font-regular"></main-page>
+  <nav-bar class="roboto-font-regular"></nav-bar>
 </template>
 
 <script>
-import MainPage from "./components/MainPage.vue";
+import NavBar from "./components/NavBar.vue";
 
 export default {
   name: 'App',
   components: {
-    MainPage
+    NavBar
   }
 }
 </script>

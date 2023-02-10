@@ -1,4 +1,4 @@
-<template id="main-page">
+<template id="nav-bar">
   <nav class="navbar navbar-expand-lg navbar-light" style="background: #F2F2F1">
     <a class="navbar-brand" href="#" style="margin-left: 4%;font-size: 40px">Kurva anyad</a>
     <div class="collapse navbar-collapse justify-content-end">
