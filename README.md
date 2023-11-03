@@ -7,6 +7,6 @@ Based on the results of research in medical object detection, I chose the Faster
 
 After several transformation process on the dataset, I was able to achieve 73% accuracy in binary classification of thyroid nodes.
 
-# EXPLONATION
+# Explonation
 
-The "APPLICATION" directory opens up several other directories, which contain codes of the training itself, raw data processing, python web application with the frozen model and the main web application which performs as an UI. The main web application was written in C# (ASP.NET Core), on the frontend side using VUE.js framework and it has a cloud hosted database on Microsoft Azure Cloud. 
+The "APPLICATION" directory opens up several other directories, which contains the codes of the training itself, raw data processing, python web application with the frozen model and the main web application which performs as an UI. The main web application was written in C# (ASP.NET Core), on the frontend side using VUE.js framework and it has a cloud hosted database on Microsoft Azure Cloud. 
